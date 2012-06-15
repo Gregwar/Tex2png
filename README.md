@@ -3,7 +3,12 @@ Tex2png
 
 This class provides a way to create easily LaTeX formulas.
 
-With it, you can convert raw formulas like `\sum_{i}^{i+1} \frac{i}{2}` to nice images like
+With it, you can convert raw formulas like:
+
+`\sum_{i}^{i+1} \frac{i}{2}`
+
+To nice images like:
+
 ![Sum formula](http://gregwar.com/sum.png).
 
 Requirement
