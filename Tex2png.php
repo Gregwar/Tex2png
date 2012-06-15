@@ -171,7 +171,7 @@ class Tex2png
         }
         else
         {
-            return '<img title="Formula" src="' . $this->file . '">';
+            return '<img class="formula" title="Formula" src="' . $this->file . '">';
         }
     }
 
