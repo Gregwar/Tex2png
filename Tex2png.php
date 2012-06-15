@@ -178,7 +178,7 @@ class Tex2png
     /**
      * Sets the cache directory
      */
-    public function setCacheDir($directory)
+    public function setCacheDirectory($directory)
     {
         $this->cacheDir = $directory;
     }
