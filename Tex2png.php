@@ -186,7 +186,7 @@ class Tex2png
     /**
      * Sets the temporary directory
      */
-    public function setTempDir($directory)
+    public function setTempDirectory($directory)
     {
         $this->tmpDir = $directory;
     }
