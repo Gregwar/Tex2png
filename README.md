@@ -9,7 +9,7 @@ With it, you can convert raw formulas like:
 
 To nice images like:
 
-![Sum formula](http://gregwar.com/sum.png).
+![Sum formula](http://gregwar.com/sum.png)
 
 Requirement
 ===========
