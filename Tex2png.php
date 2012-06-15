@@ -199,6 +199,14 @@ class Tex2png
         return $this->file;
     }
 
+    /**
+     * The string representation is the cache file
+     */
+    public function __toString()
+    {
+        return $this->getFile();
+    }
+
     /** 
      * Create and returns the absolute directory for a hash
      *
