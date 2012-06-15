@@ -12,7 +12,7 @@ To nice images like:
 ![Sum formula](http://gregwar.com/sum.png)
 
 Requirement
-===========
+-----------
 
 To use this library you'll need :
 
@@ -24,7 +24,7 @@ You'll also need a temporary folder and, of courses, enough permissions to write
 target directory
 
 Usage
-=====
+-----
 
 Just include the `Tex2png.php` file or register this repository directory as the
 `Gregwar\Tex2png\` namespace and do the following :
@@ -41,6 +41,6 @@ Tex2png::create('\sum_{i}^{i+1} \frac{i}{2}')
 You can have a look at the example in `example/` directory.
 
 License
-=======
+-------
 
 This class is under MIT license, for more information, please refer to the `LICENSE` file
