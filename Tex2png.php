@@ -171,7 +171,7 @@ class Tex2png
         }
         else
         {
-            return '<img class="formula" title="Formula" src="' . $this->file . '">';
+            return '<img class="formula" title="Formula" src="' . $this->getFile() . '">';
         }
     }
 
@@ -196,7 +196,15 @@ class Tex2png
      */
     public function getFile()
     {
-        return $this->file;
+        return $this->hookFile($this->file);
+    }
+
+    /**
+     * Hook that helps extending this class (eg: adding a prefix or suffix)
+     */
+    public function hookFile($filename)
+    {
+        return $filename;
     }
 
     /**
