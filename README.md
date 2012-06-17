@@ -5,7 +5,7 @@ This class provides a way to create easily LaTeX formulas.
 
 With it, you can convert raw formulas like:
 
-`\sum_{i}^{i+1} \frac{i}{2}`
+`\sum_{i = 0}^{i = n} \frac{i}{2}`
 
 To nice images like:
 
@@ -33,7 +33,7 @@ Just include the `Tex2png.php` file or register this repository directory as the
 <?php
 
 // This will create a formula and save it to sum.pnh
-Tex2png::create('\sum_{i}^{i+1} \frac{i}{2}')
+Tex2png::create('\sum_{i = 0}^{i = n} \frac{i}{2}')
     ->saveTo('sum.png')
     ->generate();
 ```

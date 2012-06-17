@@ -6,6 +6,6 @@ use Gregwar\Tex2png\Tex2png;
 
 echo "Generating sum.png...\n";
 
-Tex2png::create('\sum_{i}^{i+1} \frac{i}{2}')
+Tex2png::create('\sum_{i = 0}^{i = n} \frac{i}{2}')
     ->saveTo('sum.png')
     ->generate();
