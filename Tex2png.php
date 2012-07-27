@@ -18,12 +18,12 @@ class Tex2png
     /**
     * Where is the DVIPNG ?
     */
-	const DVIPNG = "/usr/bin/dvipng";
+    const DVIPNG = "/usr/bin/dvipng";
 	
     /**
     * Where is the convert command ?
     */
-	const CONV = "usr/bin/convert";
+    const CONV = "usr/bin/convert";
     
     /**
      * Cache directory
