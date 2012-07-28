@@ -81,6 +81,21 @@ class Tex2png
      */
     public function saveTo($file)
     {
+        // Case if HASH is empty
+        if( $this->hash == NULL )
+        {
+            throw new \Exception('Unable save image...');
+        }
+
+        $source = generateFileFromhash($this->hash) . '.png';
+
+        // If can't copy file.
+        if( ! copy($source, $file ))
+        {
+            throw new \Exception('Unable to save file... Try Again.');
+        }
+
+        // Reset position of FILE. Or not ?!
         $this->file = $file;
 
         return $this;
@@ -248,7 +263,7 @@ class Tex2png
      *
      * @return string the full file name
      */
-    public function generateFileFromhash($hash)
+    protected function generateFileFromhash($hash)
     {
         $directory = $this->cacheDir;
 
