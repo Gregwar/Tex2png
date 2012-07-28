@@ -9,6 +9,17 @@ namespace Gregwar\Tex2png;
  */
 class Tex2png
 {
+    
+    /**
+    * Where is the LaTex ?
+    */
+    const LATEX = "/usr/bin/latex";
+    
+    /**
+    * Where is the DVIPNG ?
+    */
+    const DVIPNG = "/usr/bin/dvipng";
+    
     /**
      * Cache directory
      */
@@ -70,6 +81,21 @@ class Tex2png
      */
     public function saveTo($file)
     {
+        // Case if HASH is empty
+        if( $this->hash == NULL )
+        {
+            throw new \Exception('Unable save image...');
+        }
+
+        $source = generateFileFromhash($this->hash) . '.png';
+
+        // If can't copy file.
+        if( ! copy($source, $file ))
+        {
+            throw new \Exception('Unable to save file... Try Again.');
+        }
+
+        // Reset position of FILE. Or not ?!
         $this->file = $file;
 
         return $this;
@@ -113,9 +139,24 @@ class Tex2png
     {
         $tmpfile = $this->tmpDir . '/' . $this->hash . '.tex';
 
-        $tex = "\documentclass[fleqn]{article}\n\usepackage{amssymb,amsmath}\n\usepackage{color}\n\usepackage[latin1]{inputenc}\n\\begin{document}\n\\"."thispagestyle{empty}\n\mathindent0cm\n\parindent0cm\n\\begin{displaymath}\n";
+        $tex = "\documentclass[12pt]{article}\n";
+        
+        // What package to use?!
+        $tex .= "\usepackage{amssymb,amsmath}\n";
+        $tex .= "\usepackage{color}\n";
+        $tex .= "\usepackage{amsfonts}\n";
+        $tex .= "\usepackage{amssymb}\n";
+        $tex .= "\usepackage{pst-plot}\n";
+        $tex .= "\usepackage[latin1]{inputenc}\n";
+        
+        $tex .= "\begin{document}\n";
+        $tex .= "\pagestyle{empty}\n";
+        $tex .= "\begin{displaymath}\n";
+        
         $tex .= $this->formula."\n";
-        $tex .= "\end{displaymath}\n\end{document}\n";
+        
+        $tex .= "\end{displaymath}\n";
+        $tex .= "\end{document}\n";
 
         if (file_put_contents($tmpfile, $tex) === false)
         {
@@ -128,7 +169,7 @@ class Tex2png
      */
     protected function latexFile()
     {
-        $command = 'cd ' . $this->tmpDir . ';latex ' . $this->hash . '.tex < /dev/null |grep ^!|grep -v Emergency > ' . $this->tmpDir . '/' .$this->hash . '.err 2> /dev/null';
+        $command = 'cd ' . $this->tmpDir . '; ' .Tex2png::LATEX . ' ' . . $this->hash . '.tex < /dev/null |grep ^!|grep -v Emergency > ' . $this->tmpDir . '/' .$this->hash . '.err 2> /dev/null 2>&1';
 
         shell_exec($command);
 
@@ -144,7 +185,7 @@ class Tex2png
     protected function dvi2png()
     {
         // XXX background: -bg 'rgb 0.5 0.5 0.5'
-        $command = 'dvipng -q -T tight -D ' . $this->density . ' -o ' . $this->file . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi';
+        $command = Tex2png::DVIPNG . ' -q -T tight -D ' . $this->density . ' -o ' . $this->file . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
 
         if (shell_exec($command) === null) 
         {
@@ -157,7 +198,7 @@ class Tex2png
      */
     protected function clean()
     {
-        @shell_exec('rm -f ' . $this->tmpDir . '/' . $this->hash . '.*');
+        @shell_exec('rm -f ' . $this->tmpDir . '/' . $this->hash . '.* 2>&1');
     }
 
     /**
@@ -222,7 +263,7 @@ class Tex2png
      *
      * @return string the full file name
      */
-    public function generateFileFromhash($hash)
+    protected function generateFileFromhash($hash)
     {
         $directory = $this->cacheDir;
 
