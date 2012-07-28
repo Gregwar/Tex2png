@@ -132,7 +132,6 @@ class Tex2png
         $tex .= "\usepackage{amsfonts}\n";
         $tex .= "\usepackage{amssymb}\n";
         $tex .= "\usepackage{pst-plot}\n";
-        //$tex .= "\usepackage{xcolor}\n";
         $tex .= "\usepackage[latin1]{inputenc}\n";
         
         $tex .= "\begin{document}\n";
