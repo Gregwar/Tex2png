@@ -19,6 +19,11 @@ class Tex2png
     * Where is the DVIPNG ?
     */
     const DVIPNG = "/usr/bin/dvipng";
+
+    /**
+     * LaTeX packges
+     */
+    public $packages = array('amssymb,amsmath', 'color', 'amsfonts', 'amssymb', 'pst-plot');
     
     /**
      * Cache directory
@@ -126,13 +131,12 @@ class Tex2png
 
         $tex = "\documentclass[12pt]{article}\n";
         
-        // What package to use?!
-        $tex .= "\usepackage{amssymb,amsmath}\n";
-        $tex .= "\usepackage{color}\n";
-        $tex .= "\usepackage{amsfonts}\n";
-        $tex .= "\usepackage{amssymb}\n";
-        $tex .= "\usepackage{pst-plot}\n";
-        $tex .= "\usepackage[latin1]{inputenc}\n";
+        $tex .= "\usepackage[utf8]{inputenc}\n";
+
+        // Packages
+        foreach ($this->packages as $package) {
+            $tex .= '\usepackage{' . $package . "}\n";
+        }
         
         $tex .= "\begin{document}\n";
         $tex .= "\pagestyle{empty}\n";
