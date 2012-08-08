@@ -59,7 +59,7 @@ class Tex2png
 
     public static function create($formula, $density = 155)
     {
-        return new Tex2png($formula, $density);
+        return new self($formula, $density);
     }
 
     public function __construct($formula, $density = 155)
@@ -81,21 +81,6 @@ class Tex2png
      */
     public function saveTo($file)
     {
-        // Case if HASH is empty
-        if( $this->hash == NULL )
-        {
-            throw new \Exception('Unable save image...');
-        }
-
-        $source = generateFileFromhash($this->hash) . '.png';
-
-        // If can't copy file.
-        if( ! copy($source, $file ))
-        {
-            throw new \Exception('Unable to save file... Try Again.');
-        }
-
-        // Reset position of FILE. Or not ?!
         $this->file = $file;
 
         return $this;
@@ -169,7 +154,7 @@ class Tex2png
      */
     protected function latexFile()
     {
-        $command = 'cd ' . $this->tmpDir . '; ' .Tex2png::LATEX . ' ' . . $this->hash . '.tex < /dev/null |grep ^!|grep -v Emergency > ' . $this->tmpDir . '/' .$this->hash . '.err 2> /dev/null 2>&1';
+        $command = 'cd ' . $this->tmpDir . '; ' . self::LATEX . ' ' . $this->hash . '.tex < /dev/null |grep ^!|grep -v Emergency > ' . $this->tmpDir . '/' .$this->hash . '.err 2> /dev/null 2>&1';
 
         shell_exec($command);
 
@@ -185,7 +170,7 @@ class Tex2png
     protected function dvi2png()
     {
         // XXX background: -bg 'rgb 0.5 0.5 0.5'
-        $command = Tex2png::DVIPNG . ' -q -T tight -D ' . $this->density . ' -o ' . $this->file . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
+        $command = self::DVIPNG . ' -q -T tight -D ' . $this->density . ' -o ' . $this->file . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
 
         if (shell_exec($command) === null) 
         {
