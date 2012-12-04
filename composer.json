@@ -1,0 +1,23 @@
+{
+    "name": "gregwar/tex2png",
+    "description": "LaTeX formula to PNG",
+    "keywords": ["image", "latex", "png", "formula", "math"],
+    "homepage": "https://github.com/Gregwar/Tex2png",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Grégoire Passault",
+            "email": "g.passault@gmail.com",
+            "homepage": "http://www.gregwar.com/"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "target-dir": "Gregwar/Tex2png",
+    "autoload": {
+        "psr-0": {
+            "Gregwar\\Tex2png": ""
+        }
+    }
+}
