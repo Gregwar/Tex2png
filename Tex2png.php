@@ -108,7 +108,7 @@ class Tex2png
     {
         if ($this->actualFile === null) 
         {
-            list($this->actualFile, $this->file) = $this->generateFileFromHash($this->hash) . '.png';
+            list($this->actualFile, $this->file) = $this->generateFileFromHash($this->hash, '.png');
         }
 
         if (!file_exists($this->actualFile))
@@ -270,14 +270,14 @@ class Tex2png
      *
      * @return string the full file name
      */
-    protected function generateFileFromHash($hash)
+    protected function generateFileFromHash($hash, $suffix)
     {
         $directory = $this->cacheDir;
 
-        if ($this->actualCacheDirectory === null) {
+        if ($this->actualCacheDir === null) {
             $actualDirectory = $directory;
         } else {
-            $actualDirectory = $this->actualCacheDirectory;
+            $actualDirectory = $this->actualCacheDir;
         }
 
         if (!file_exists($actualDirectory)) {
@@ -294,8 +294,8 @@ class Tex2png
             }   
         }   
 
-        $file = $directory . '/' . substr($hash,5);
-        $actualFile = $actualDirectory . '/' . substr($hash,5);
+        $file = $directory . '/' . substr($hash,5) . $suffix;
+        $actualFile = $actualDirectory . '/' . substr($hash,5) . $suffix;
 
         return array($actualFile, $file);
     } 
