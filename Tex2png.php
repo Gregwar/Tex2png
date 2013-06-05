@@ -31,6 +31,11 @@ class Tex2png
     protected $cacheDir = 'cache/tex';
 
     /**
+     * Actual cache directory
+     */
+    protected $actualCacheDir = null;
+
+    /**
      * Temporary directory
      * This is needed to write temporary files needed for
      * generation
@@ -41,6 +46,11 @@ class Tex2png
      * Target file
      */
     protected $file = null;
+
+    /**
+     * Target actual file
+     */
+    protected $actualFile = null;
 
     /**
      * Hash
@@ -86,7 +96,7 @@ class Tex2png
      */
     public function saveTo($file)
     {
-        $this->file = $file;
+        $this->actualFile = $this->file = $file;
 
         return $this;
     }
@@ -96,13 +106,12 @@ class Tex2png
      */
     public function generate()
     {
-        if ($this->file === null) 
+        if ($this->actualFile === null) 
         {
-            $this->file = $this->generateFileFromHash($this->hash) . '.png';
+            list($this->actualFile, $this->file) = $this->generateFileFromHash($this->hash, '.png');
         }
 
-        if (!file_exists($this->file))
-        {
+            {
             try {
                 // Generates the LaTeX file
                 $this->createFile();
@@ -174,7 +183,7 @@ class Tex2png
     protected function dvi2png()
     {
         // XXX background: -bg 'rgb 0.5 0.5 0.5'
-        $command = self::DVIPNG . ' -q -T tight -D ' . $this->density . ' -o ' . $this->file . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
+        $command = self::DVIPNG . ' -q -T tight -D ' . $this->density . ' -o ' . $this->actualFile . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
 
         if (shell_exec($command) === null) 
         {
@@ -211,6 +220,14 @@ class Tex2png
     public function setCacheDirectory($directory)
     {
         $this->cacheDir = $directory;
+    }
+
+    /**
+     * Sets the actual cache directory
+     */
+    public function setActualCacheDirectory($actualDirectory)
+    {
+        $this->actualCacheDir = $actualDirectory;
     }
 
     /**
@@ -252,22 +269,34 @@ class Tex2png
      *
      * @return string the full file name
      */
-    protected function generateFileFromhash($hash)
+    protected function generateFileFromHash($hash, $suffix)
     {
         $directory = $this->cacheDir;
 
-        if (!file_exists($directory))
-            mkdir($directory); 
+        if ($this->actualCacheDir === null) {
+            $actualDirectory = $directory;
+        } else {
+            $actualDirectory = $this->actualCacheDir;
+        }
+
+        if (!file_exists($actualDirectory)) {
+            mkdir($actualDirectory); 
+        }
 
         for ($i=0; $i<5; $i++) {
             $c = $hash[$i];
-            $directory .= '/'.$c;
-            if (!file_exists($directory)) {
-                mkdir($directory);
+            $directory .= '/' . $c;
+            $actualDirectory .= '/' . $c;
+
+            if (!file_exists($actualDirectory)) {
+                mkdir($actualDirectory);
             }   
         }   
 
-        return $directory . '/' . substr($hash,5);
+        $file = $directory . '/' . substr($hash,5) . $suffix;
+        $actualFile = $actualDirectory . '/' . substr($hash,5) . $suffix;
+
+        return array($actualFile, $file);
     } 
 }
 
