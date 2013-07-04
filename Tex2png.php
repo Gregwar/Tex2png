@@ -111,22 +111,20 @@ class Tex2png
             list($this->actualFile, $this->file) = $this->generateFileFromHash($this->hash, '.png');
         }
 
-            {
-            try {
-                // Generates the LaTeX file
-                $this->createFile();
-           
-                // Compile the latexFile     
-                $this->latexFile();
+        try {
+            // Generates the LaTeX file
+            $this->createFile();
+       
+            // Compile the latexFile     
+            $this->latexFile();
 
-                // Converts the DVI file to PNG
-                $this->dvi2png();
-            } catch (\Exception $e) {
-                $this->error = $e;
-            }
-
-            $this->clean();
+            // Converts the DVI file to PNG
+            $this->dvi2png();
+        } catch (\Exception $e) {
+            $this->error = $e;
         }
+
+        $this->clean();
 
         return $this;
     }
@@ -156,8 +154,7 @@ class Tex2png
         $tex .= '\end{displaymath}'."\n";
         $tex .= '\end{document}'."\n";
 
-        if (file_put_contents($tmpfile, $tex) === false)
-        {
+        if (file_put_contents($tmpfile, $tex) === false) {
             throw new \Exception('Failed to open target file');
         }
     }
@@ -185,8 +182,7 @@ class Tex2png
         // XXX background: -bg 'rgb 0.5 0.5 0.5'
         $command = self::DVIPNG . ' -q -T tight -D ' . $this->density . ' -o ' . $this->actualFile . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
 
-        if (shell_exec($command) === null) 
-        {
+        if (shell_exec($command) === null) {
             throw new \Exception('Unable to convert the DVI file to PNG (is dvipng installed?)');
         }
     }
@@ -279,19 +275,15 @@ class Tex2png
             $actualDirectory = $this->actualCacheDir;
         }
 
-        if (!file_exists($actualDirectory)) {
-            mkdir($actualDirectory); 
-        }
-
         for ($i=0; $i<5; $i++) {
             $c = $hash[$i];
             $directory .= '/' . $c;
             $actualDirectory .= '/' . $c;
-
-            if (!file_exists($actualDirectory)) {
-                mkdir($actualDirectory);
-            }   
         }   
+
+        if (!is_dir($actualDirectory)) {
+            mkdir($actualDirectory, 0755, true);
+        }
 
         $file = $directory . '/' . substr($hash,5) . $suffix;
         $actualFile = $actualDirectory . '/' . substr($hash,5) . $suffix;
