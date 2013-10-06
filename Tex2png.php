@@ -2,6 +2,8 @@
 
 namespace Gregwar\Tex2png;
 
+use Gregwar\Cache\Cache;
+
 /**
  * Helper to generate PNG from LaTeX formula
  *
@@ -48,6 +50,11 @@ class Tex2png
     protected $file = null;
 
     /**
+     * Cache
+     */
+    protected $cache = null;
+
+    /**
      * Target actual file
      */
     protected $actualFile = null;
@@ -87,6 +94,7 @@ class Tex2png
         $this->formula = $formula;
         $this->density = $density;
         $this->hash = sha1(serialize($datas));
+        $this->cache = new Cache;
 
         return $this;
     }
@@ -106,25 +114,36 @@ class Tex2png
      */
     public function generate()
     {
-        if ($this->actualFile === null) 
-        {
-            list($this->actualFile, $this->file) = $this->generateFileFromHash($this->hash, '.png');
+        $tex2png = $this;
+
+        $generate = function($target) use ($tex2png) {
+            $tex2png->actualFile = $target;
+
+            try {
+                // Generates the LaTeX file
+                $this->createFile();
+           
+                // Compile the latexFile     
+                $this->latexFile();
+
+                // Converts the DVI file to PNG
+                $this->dvi2png();
+            } catch (\Exception $e) {
+                $this->error = $e;
+            }
+
+            $this->clean();
+        };
+
+        if ($this->actualFile === null) {
+            $target = $this->hash . '.png';
+            $this->cache->getOrCreate($target, array(), $generate);
+
+            $this->file = $this->cache->getCacheFile($target);
+            $this->actualFile = $this->cache->getCacheFile($target, true);
+        } else {
+            $generate($this->actualFile);
         }
-
-        try {
-            // Generates the LaTeX file
-            $this->createFile();
-       
-            // Compile the latexFile     
-            $this->latexFile();
-
-            // Converts the DVI file to PNG
-            $this->dvi2png();
-        } catch (\Exception $e) {
-            $this->error = $e;
-        }
-
-        $this->clean();
 
         return $this;
     }
@@ -168,8 +187,7 @@ class Tex2png
 
         shell_exec($command);
 
-        if (!file_exists($this->tmpDir . '/' . $this->hash . '.dvi'))
-        {
+        if (!file_exists($this->tmpDir . '/' . $this->hash . '.dvi')) {
             throw new \Exception('Unable to compile LaTeX formula (is latex installed? check syntax)');
         }
     }
@@ -215,7 +233,7 @@ class Tex2png
      */
     public function setCacheDirectory($directory)
     {
-        $this->cacheDir = $directory;
+        $this->cache->setCacheDirectory($directory);
     }
 
     /**
@@ -223,7 +241,7 @@ class Tex2png
      */
     public function setActualCacheDirectory($actualDirectory)
     {
-        $this->actualCacheDir = $actualDirectory;
+        $this->cache->setActualCacheDirectory($actualDirectory);
     }
 
     /**
@@ -257,38 +275,4 @@ class Tex2png
     {
         return $this->getFile();
     }
-
-    /** 
-     * Create and returns the absolute directory for a hash
-     *
-     * @param string $hash the hash
-     *
-     * @return string the full file name
-     */
-    protected function generateFileFromHash($hash, $suffix)
-    {
-        $directory = $this->cacheDir;
-
-        if ($this->actualCacheDir === null) {
-            $actualDirectory = $directory;
-        } else {
-            $actualDirectory = $this->actualCacheDir;
-        }
-
-        for ($i=0; $i<5; $i++) {
-            $c = $hash[$i];
-            $directory .= '/' . $c;
-            $actualDirectory .= '/' . $c;
-        }   
-
-        if (!is_dir($actualDirectory)) {
-            mkdir($actualDirectory, 0755, true);
-        }
-
-        $file = $directory . '/' . substr($hash,5) . $suffix;
-        $actualFile = $actualDirectory . '/' . substr($hash,5) . $suffix;
-
-        return array($actualFile, $file);
-    } 
 }
-

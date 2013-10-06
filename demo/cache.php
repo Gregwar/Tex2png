@@ -1,6 +1,6 @@
 <?php
 
-require_once('../Tex2png.php');
+require('../autoload.php');
 
 use Gregwar\Tex2png\Tex2png;
 

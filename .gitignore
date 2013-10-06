@@ -1,0 +1,4 @@
+demo/cache
+composer.lock
+vendor
+**.swp
