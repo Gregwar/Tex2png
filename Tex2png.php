@@ -30,54 +30,54 @@ class Tex2png
     /**
      * Cache directory
      */
-    protected $cacheDir = 'cache/tex';
+    public $cacheDir = 'cache/tex';
 
     /**
      * Actual cache directory
      */
-    protected $actualCacheDir = null;
+    public $actualCacheDir = null;
 
     /**
      * Temporary directory
      * This is needed to write temporary files needed for
      * generation
      */
-    protected $tmpDir = '/tmp';
+    public $tmpDir = '/tmp';
 
     /**
      * Target file
      */
-    protected $file = null;
+    public $file = null;
 
     /**
      * Cache
      */
-    protected $cache = null;
+    public $cache = null;
 
     /**
      * Target actual file
      */
-    protected $actualFile = null;
+    public $actualFile = null;
 
     /**
      * Hash
      */
-    protected $hash;
+    public $hash;
 
     /**
      * LaTeX formula
      */
-    protected $formula;
+    public $formula;
 
     /**
      * Target density
      */
-    protected $density;
+    public $density;
 
     /**
      * Error (if any)
      */
-    protected $error = null;
+    public $error = null;
 
     public static function create($formula, $density = 155)
     {
@@ -121,18 +121,18 @@ class Tex2png
 
             try {
                 // Generates the LaTeX file
-                $this->createFile();
+                $tex2png->createFile();
            
                 // Compile the latexFile     
-                $this->latexFile();
+                $tex2png->latexFile();
 
                 // Converts the DVI file to PNG
-                $this->dvi2png();
+                $tex2png->dvi2png();
             } catch (\Exception $e) {
-                $this->error = $e;
+                $tex2png->error = $e;
             }
 
-            $this->clean();
+            $tex2png->clean();
         };
 
         if ($this->actualFile === null) {
@@ -151,7 +151,7 @@ class Tex2png
     /**
      * Create the LaTeX file
      */
-    protected function createFile()
+    public function createFile()
     {
         $tmpfile = $this->tmpDir . '/' . $this->hash . '.tex';
 
@@ -181,7 +181,7 @@ class Tex2png
     /**
      * Compiles the LaTeX to DVI
      */
-    protected function latexFile()
+    public function latexFile()
     {
         $command = 'cd ' . $this->tmpDir . '; ' . self::LATEX . ' ' . $this->hash . '.tex < /dev/null |grep ^!|grep -v Emergency > ' . $this->tmpDir . '/' .$this->hash . '.err 2> /dev/null 2>&1';
 
@@ -195,7 +195,7 @@ class Tex2png
     /**
      * Converts the DVI file to PNG
      */
-    protected function dvi2png()
+    public function dvi2png()
     {
         // XXX background: -bg 'rgb 0.5 0.5 0.5'
         $command = self::DVIPNG . ' -q -T tight -D ' . $this->density . ' -o ' . $this->actualFile . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
@@ -208,7 +208,7 @@ class Tex2png
     /**
      * Cleaning
      */
-    protected function clean()
+    public function clean()
     {
         @shell_exec('rm -f ' . $this->tmpDir . '/' . $this->hash . '.* 2>&1');
     }
