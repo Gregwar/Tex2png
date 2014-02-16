@@ -61,6 +61,8 @@ tiny but powerful caching system avoiding to regenerate a formula PNG twice.
 
 Note that you can change the cache directory calling the `setCacheDirectory()` function
 
+This is based on the [Gregwar/Cache](https://github.com/Gregwar/Cache/) library.
+
 Changing the density
 --------------------
 
