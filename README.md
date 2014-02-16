@@ -9,7 +9,7 @@ With it, you can convert raw formulas like:
 
 To nice images like:
 
-![Sum formula](http://gregwar.com/sum.png)
+![Sum formula](demo/sum.png)
 
 Requirement
 -----------
@@ -76,7 +76,7 @@ Tex2png::create('\sum_{i = 0}^{i = n} \frac{i}{2}', 300)
 Default density is **155**, you can choose to generate really big images, this is an example
 of the formula with a density of 1000 :
 
-![Sum formula (density=1000)](http://gregwar.com/sum1000.png)
+![Sum formula (density=1000)](demo/sum-big.png)
 
 License
 -------
