@@ -183,7 +183,7 @@ class Tex2png
      */
     public function latexFile()
     {
-        $command = 'cd ' . $this->tmpDir . '; ' . self::LATEX . ' ' . $this->hash . '.tex < /dev/null |grep ^!|grep -v Emergency > ' . $this->tmpDir . '/' .$this->hash . '.err 2> /dev/null 2>&1';
+        $command = 'cd ' . $this->tmpDir . '; ' . static::LATEX . ' ' . $this->hash . '.tex < /dev/null |grep ^!|grep -v Emergency > ' . $this->tmpDir . '/' .$this->hash . '.err 2> /dev/null 2>&1';
 
         shell_exec($command);
 
@@ -198,7 +198,7 @@ class Tex2png
     public function dvi2png()
     {
         // XXX background: -bg 'rgb 0.5 0.5 0.5'
-        $command = self::DVIPNG . ' -q -T tight -D ' . $this->density . ' -o ' . $this->actualFile . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
+        $command = static::DVIPNG . ' -q -T tight -D ' . $this->density . ' -o ' . $this->actualFile . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
 
         if (shell_exec($command) === null) {
             throw new \Exception('Unable to convert the DVI file to PNG (is dvipng installed?)');
