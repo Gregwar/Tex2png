@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require('../autoload.php');
+require(__DIR__.'/../autoload.php');
 
 use Gregwar\Tex2png\Tex2png;
 
