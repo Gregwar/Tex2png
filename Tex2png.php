@@ -11,22 +11,22 @@ use Gregwar\Cache\Cache;
  */
 class Tex2png
 {
-    
+
     /**
     * Where is the LaTex ?
     */
-    const LATEX = "/usr/bin/latex";
-    
+    private $LATEX;
+
     /**
     * Where is the DVIPNG ?
     */
-    const DVIPNG = "/usr/bin/dvipng";
+    private $DVIPNG;
 
     /**
      * LaTeX packges
      */
     public $packages = array('amssymb,amsmath', 'color', 'amsfonts', 'amssymb', 'pst-plot');
-    
+
     /**
      * Cache directory
      */
@@ -86,6 +86,17 @@ class Tex2png
 
     public function __construct($formula, $density = 155)
     {
+
+        if (file_exists("/Library/TeX/texbin/latex")) {
+            $this->LATEX = "/Library/TeX/texbin/latex";
+        } else {
+            $this->LATEX = "/usr/bin/latex";
+        }
+        if (file_exists("/Library/TeX/texbin/dvipng")) {
+            $this->DVIPNG = "/Library/TeX/texbin/dvipng";
+        } else {
+            $this->DVIPNG = "/usr/bin/dvipng";
+        }
         $datas = array(
             'formula' => $formula,
             'density' => $density,
@@ -122,8 +133,8 @@ class Tex2png
             try {
                 // Generates the LaTeX file
                 $tex2png->createFile();
-           
-                // Compile the latexFile     
+
+                // Compile the latexFile
                 $tex2png->latexFile();
 
                 // Converts the DVI file to PNG
@@ -156,20 +167,20 @@ class Tex2png
         $tmpfile = $this->tmpDir . '/' . $this->hash . '.tex';
 
         $tex = '\documentclass[12pt]{article}'."\n";
-        
+
         $tex .= '\usepackage[utf8]{inputenc}'."\n";
 
         // Packages
         foreach ($this->packages as $package) {
             $tex .= '\usepackage{' . $package . "}\n";
         }
-        
+
         $tex .= '\begin{document}'."\n";
         $tex .= '\pagestyle{empty}'."\n";
         $tex .= '\begin{displaymath}'."\n";
-        
+
         $tex .= $this->formula."\n";
-        
+
         $tex .= '\end{displaymath}'."\n";
         $tex .= '\end{document}'."\n";
 
@@ -183,7 +194,7 @@ class Tex2png
      */
     public function latexFile()
     {
-        $command = 'cd ' . $this->tmpDir . '; ' . static::LATEX . ' ' . $this->hash . '.tex < /dev/null |grep ^!|grep -v Emergency > ' . $this->tmpDir . '/' .$this->hash . '.err 2> /dev/null 2>&1';
+        $command = 'cd ' . $this->tmpDir . '; ' . $this->LATEX . ' ' . $this->hash . '.tex < /dev/null |grep ^!|grep -v Emergency > ' . $this->tmpDir . '/' .$this->hash . '.err 2> /dev/null 2>&1';
 
         shell_exec($command);
 
@@ -198,7 +209,7 @@ class Tex2png
     public function dvi2png()
     {
         // XXX background: -bg 'rgb 0.5 0.5 0.5'
-        $command = static::DVIPNG . ' -q -T tight -D ' . $this->density . ' -o ' . $this->actualFile . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
+        $command = $this->DVIPNG . ' -q -T tight -D ' . $this->density . ' -o ' . $this->actualFile . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
 
         if (shell_exec($command) === null) {
             throw new \Exception('Unable to convert the DVI file to PNG (is dvipng installed?)');

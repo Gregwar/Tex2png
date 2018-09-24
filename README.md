@@ -20,8 +20,13 @@ To use this library you'll need :
 * **dvipng** : to convert dvis to png
 * **shell_exec** : you need to be able to call the php `shell_exec()` function
 
-You'll also need a temporary folder and, of courses, enough permissions to write to the 
-target directory
+Mac OS installation
+-----------
+
+1) Download and install MacTex ( http://tug.org/mactex/ )
+Install the pkg file, very straight forward
+2) ```$ sudo tlmgr update --self```
+3) ```$ sudo tlmgr install dvipng```
 
 Usage
 -----
@@ -56,7 +61,7 @@ Tex2png::create('\sum_{i = 0}^{i = n} \frac{i}{2}')
 // the image density. (file name will look like cache/tex/3/0/2/e/6/8febefe7aaed9eeb8abf09070d10e02e93e.png)
 ```
 
-If the file already exists, it will not generate anything, else, it will generate it. This results in a 
+If the file already exists, it will not generate anything, else, it will generate it. This results in a
 tiny but powerful caching system avoiding to regenerate a formula PNG twice.
 
 Note that you can change the cache directory calling the `setCacheDirectory()` function
